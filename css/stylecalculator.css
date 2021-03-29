@@ -66,14 +66,13 @@ section {
   height: 50vh;
   width: 100%;
   background-color: indigo;
-  padding: 1vh 0vw 1vh 1vw;
+  padding: 1vh 1vw 1vh 0.4vw;
   display: grid;
-  grid-template-columns: 6.7vw 6.7vw 6.7vw 6.7vw;
+  grid-template-columns: 6.9vw 6.9vw 6.9vw 6.9vw;
   grid-column-gap: 0.5vw;
   grid-row-gap: 0.5vw;
 }
 .caixa-calculadora .entradas .igual {
-  background-color: blue;
   grid-column-start: 4;
   grid-column-end: 4;
   grid-row-start: 4;
