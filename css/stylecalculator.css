@@ -16,7 +16,7 @@ header {
   align-items: center;
   justify-content: flex-end;
 }
-header p {
+header .mode {
   padding-right: 50px;
 }
 
