@@ -22,9 +22,11 @@ onload = () => {
     document.querySelector('#btn-8').onclick = () => cliqueBotaoDigito('8');
     document.querySelector('#btn-9').onclick = () => cliqueBotaoDigito('9');
 
-    /* --- Seleciona os botões de apagar tudo e apagar último digito */
+    /* --- Seleciona os botões de apagar tudo, apagar último digito, negativar número e colocar ponto*/
     document.querySelector('#btn-clearAll').onclick = clearAll;
     document.querySelector('#btn-clearLast').onclick = clearLast;
+    document.querySelector('#btn-negative').onclick = negativeNumber;
+    document.querySelector('#btn-ponto').onclick = colocaPonto;
 };
 
 
@@ -63,10 +65,9 @@ const atualizaVisor = ()=> {
  */
 const cliqueBotaoDigito = (digito) => {
     if(novoValor){
-        valorClicado = digito;
-        novoValor = false;
-    } else 
-        valorClicado += digito;
+        digito === '0' ? (novoValor = true) : (valorClicado = digito, novoValor = false);
+        console.log(valorClicado)
+    } else valorClicado += digito;
         atualizaVisor();
 }
 
@@ -80,14 +81,45 @@ const clearAll = () => {
     novoValor = true;
 }
 
-/**
+/** 
+ * Se o ditio for "-0." ou 0. e clicar em zerar o valor e definido para "0".
+ * Se o valor for de tamanho 2 e tiver com o "-" então zera o valor. Ex: "-2"
  * Limpa o último digito inserido. Se o último digito for "0" ou com tamanho igual a 1 então zera o visor e atualiza as variáveis.
  * Caso contrario atualiza o valor atual no visor. 
  */
 const clearLast = () => {
+
+    if(valorClicado === "-0." || valorClicado === "0.") {
+        valorClicado = '0';
+        novoValor = true;
+    }
+
+    if (valorClicado.length === 2 && valorClicado.indexOf('-') != -1) {
+        valorClicado = '0';
+        novoValor = true;
+    }
+
     if (valorClicado.length === 1 || valorClicado === "0") {
         valorClicado = '0';
         novoValor = true;
     } else valorClicado = valorClicado.slice(0, valorClicado.length - 1);
     atualizaVisor();
+}
+
+/**
+ * Ao clicar no botão de +/- irá negativa o número ou não.
+ */
+
+const negativeNumber = (ev) => {
+    if( valorClicado.indexOf('-') === -1) {
+        valorClicado === "0" ? ev.preventDefault() : valorClicado = "-"+ valorClicado; atualizaVisor();
+    } else valorClicado = valorClicado.slice(1, valorClicado.length);
+    atualizaVisor()
+}
+
+/**
+ * Coloca o ponto para número flutuante
+ */
+const colocaPonto = (ev) => {
+   valorClicado.indexOf('.') === -1 ? ( valorClicado = valorClicado + ".", atualizaVisor(), novoValor = false ) : ev.preventDefault();
 }
