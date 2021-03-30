@@ -5,31 +5,32 @@
 }
 
 $borda: 1px solid black;
-
-$bg-dark: #07141B;
-$bg-ligth: #ffffff;
-
+$preto: #07141B;
+$branco: #D1DAE3;
 
 body {
-    background-color: blue;
+    background-color: $preto;
+    color: $branco;
+}
+
+body[light] {
+    background-color: $branco;
+    color: $preto;
 }
 
 header {
     height: 10vh;
-    background-color: $bg-dark;
     display: flex;
     align-items: center;
     justify-content: flex-end;
 
     .mode {
         padding-right: 50px;
-        color: $bg-ligth;
     }
 }
 
 section {
     height: 90vh;
-    background-color: $bg-dark;
     display: flex;
     align-items: center;
     justify-content: center;

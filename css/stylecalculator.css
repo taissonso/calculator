@@ -5,24 +5,27 @@
 }
 
 body {
-  background-color: blue;
+  background-color: #07141B;
+  color: #D1DAE3;
+}
+
+body[light] {
+  background-color: #D1DAE3;
+  color: #07141B;
 }
 
 header {
   height: 10vh;
-  background-color: #07141B;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 header .mode {
   padding-right: 50px;
-  color: #ffffff;
 }
 
 section {
   height: 90vh;
-  background-color: #07141B;
   display: flex;
   align-items: center;
   justify-content: center;
