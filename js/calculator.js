@@ -21,8 +21,14 @@ onload = () => {
     document.querySelector('#btn-7').onclick = () => cliqueBotaoDigito('7');
     document.querySelector('#btn-8').onclick = () => cliqueBotaoDigito('8');
     document.querySelector('#btn-9').onclick = () => cliqueBotaoDigito('9');
+
+    /* --- Seleciona os botões de apagar tudo e apagar último digito */
+    document.querySelector('#btn-clearAll').onclick = clearAll;
+    document.querySelector('#btn-clearLast').onclick = clearLast;
 };
 
+
+/** Variaveis a serem usadas nas funções */
 let valorClicado = '0';
 let novoValor = true;
 
@@ -62,4 +68,26 @@ const cliqueBotaoDigito = (digito) => {
     } else 
         valorClicado += digito;
         atualizaVisor();
+}
+
+/**
+ * Ai clicar no botão "C" simplesmente limpa todos os visores e zera todas as operações.
+ * E restaura os valores padrões.
+ */
+const clearAll = () => {
+    document.querySelector('#inserido').innerText = "0";
+    valorClicado = '0';
+    novoValor = true;
+}
+
+/**
+ * Limpa o último digito inserido. Se o último digito for "0" ou com tamanho igual a 1 então zera o visor e atualiza as variáveis.
+ * Caso contrario atualiza o valor atual no visor. 
+ */
+const clearLast = () => {
+    if (valorClicado.length === 1 || valorClicado === "0") {
+        valorClicado = '0';
+        novoValor = true;
+    } else valorClicado = valorClicado.slice(0, valorClicado.length - 1);
+    atualizaVisor();
 }
