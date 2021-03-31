@@ -28,13 +28,21 @@ onload = () => {
     document.querySelector('#btn-clearLast').onclick = clearLast;
     document.querySelector('#btn-negative').onclick = negativeNumber;
     document.querySelector('#btn-ponto').onclick = colocaPonto;
+
+    /* --- Seleciona os botões de operações */
+    document.querySelector('#btn-soma').onclick = () => operacaoParaCalcular('+');
+    document.querySelector('#btn-sub').onclick = () => operacaoParaCalcular('-');
+    document.querySelector('#btn-div').onclick = () => operacaoParaCalcular('/');
+    document.querySelector('#btn-mult').onclick = () => operacaoParaCalcular('*');
+    document.querySelector('#btn-igual').onclick = calcular;
 };
 
 
 /** Variaveis a serem usadas nas funções */
-let valorClicado = '0';
-let novoValor = true;
-
+let valorClicado = '0'; //Armazena o valor clicado na tabuada.
+let novoValor = true; //Usado para tratar quando vai ser um novo valor.
+let primeiroValor = 0; // Valor acumulado para as operações e para o visor de operações
+let operacaoAcumulada = null; //Fica esperando o próximo digito para fazer a operação
 
 /**
  * Muda para o modo Light ou modo Dark se clicar no chebox ou label.
@@ -62,7 +70,7 @@ const modeDark = () => {
  * e Por fim atualiza o número com inteiros e decimais, com a formatação de ',' e '.'
  */
 const atualizarVisor = () => {
-    let partesNumero = valorClicado.split('.');
+    let partesNumero = valorClicado.split(',');
     let inteiros = partesNumero[0];
     let decimais = partesNumero[1];
     let valorAtualizado = '';
@@ -80,11 +88,11 @@ const atualizarVisor = () => {
     }
 
     if ( inteiros === '0' && decimais === '') {
-        valorAtualizado = '0.';   
+        valorAtualizado = '0,';   
     } else {
         if(inteiros > 0 && decimais === '') {
             valorAtualizado = valorAtualizado + '.';
-        } else valorAtualizado = valorAtualizado + (decimais ? '.' + decimais : '');
+        } else valorAtualizado = valorAtualizado + (decimais ? ',' + decimais : '');
     }    
     if (flag) {
         document.querySelector('#inserido').innerText = '-' + valorAtualizado;
@@ -113,6 +121,8 @@ const clearAll = () => {
     document.querySelector('#inserido').innerText = "0";
     valorClicado = '0';
     novoValor = true;
+    operacaoAcumulada = null;
+    primeiroValor = 0;
 }
 
 /** 
@@ -123,7 +133,7 @@ const clearAll = () => {
  */
 const clearLast = () => {
 
-    if (valorClicado === "-0." || valorClicado === "0.") {
+    if (valorClicado === "-0," || valorClicado === "0,") {
         valorClicado = '0';
         novoValor = true;
     }
@@ -160,5 +170,43 @@ const negativeNumber = (ev) => {
  * caso já tenha o ponto simplesmente faz ev.prenventDefault()
  */
 const colocaPonto = (ev) => {
-    valorClicado.indexOf('.') === -1 ? ( valorClicado = valorClicado + ".", atualizarVisor(), novoValor = false ) : ev.preventDefault();
+    valorClicado.indexOf(',') === -1 ? ( valorClicado = valorClicado + ",", atualizarVisor(), novoValor = false ) : ev.preventDefault();
 };
+
+/* Converte os valores para números reais */
+const converteValor = () => parseFloat(valorClicado.replace(',','.'));
+
+/**
+ * Recebe qual operação irá fazer 
+ */
+const operacaoParaCalcular = (operacao) => {
+    calcular();
+    primeiroValor = converteValor();
+    operacaoAcumulada = operacao;
+    novoValor = true;
+}
+
+const calcular = () => {
+    if(operacaoAcumulada != null) {
+        let resultado;
+        switch(operacaoAcumulada){
+            case '+': resultado = primeiroValor + converteValor();
+                break;
+            case '-': resultado = primeiroValor - converteValor();
+                break;
+            case '/': resultado = primeiroValor / converteValor();
+                break;
+            case '*': resultado = primeiroValor * converteValor();
+                break;
+        }
+
+        valorClicado = resultado.toString().replace('.',',');
+
+    }
+
+    novoValor = true;
+    operacaoAcumulada = null;
+    primeiroValor = 0;
+    atualizarVisor();
+}
+
