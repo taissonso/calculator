@@ -1,6 +1,6 @@
 onload = () => {
     
-    /* Pega o valor do localStorage, caso exita algum valor já ativa o modo dark/light*/
+    /* Pega o valor do localStorage, caso exista algum valor já ativa o modo dark/light*/
     const modeLight = localStorage.getItem('modeLightActive');
     if (modeLight) {
         document.querySelector('body').setAttribute("light", "true");
@@ -42,11 +42,13 @@ onload = () => {
 let valorClicado = '0'; //Armazena o valor clicado na tabuada.
 let novoValor = true; //Usado para tratar quando vai ser um novo valor.
 let primeiroValor = 0; // Valor acumulado para as operações e para o visor de operações
+let naoConvertido = "0";//Usadad para colocar o valor em string no visor de inseridos.
 let operacaoAcumulada = null; //Fica esperando o próximo digito para fazer a operação
 
+
 /**
- * Muda para o modo Light ou modo Dark se clicar no chebox ou label.
- * Em caso de selecionar, atualiza o localStorage para saber quando o usuario voltar.
+ * Muda para o modo Light ou modo Dark se clicar no checkbox ou label.
+ * Em caso de mudar, atualiza o localStorage para saber quando o usuario voltar.
  */
 const modeDark = () => {
     if (document.querySelector('#btn-mode-light').checked) {
@@ -61,7 +63,8 @@ const modeDark = () => {
 }
 
 /**
- * Ao clicar em botão atualiza o visor de insersão de digitos.
+ * Faz um teste para não deixar passar de 21 digitos, por causa do estouro de casas.
+ * Ao clicar em um botão, atualiza o visor de insersão de digitos.
  * Separa o valor que irá para o visor em inteiros e decimas. 
  * Se o valor estiver com '-', remove ele e depois passa por um for para colocar a ',' nos números inteiros a cada 3 casas 
  * para separar por mil, milhares, milhões e etc.
@@ -70,13 +73,17 @@ const modeDark = () => {
  * e Por fim atualiza o número com inteiros e decimais, com a formatação de ',' e '.'
  */
 const atualizarVisor = () => {
+    if(valorClicado.length > 21){
+        valorClicado = valorClicado.substr(0,21);
+    }
+
     let partesNumero = valorClicado.split(',');
     let inteiros = partesNumero[0];
     let decimais = partesNumero[1];
     let valorAtualizado = '';
     let aux = 0;
     let flag = false;
-   
+
     inteiros.indexOf('-') != -1 ? ( inteiros = inteiros.slice(1), flag = true ): flag = false;
    
     for (let i = inteiros.length - 1; i >= 0; i--) {
@@ -91,8 +98,8 @@ const atualizarVisor = () => {
         valorAtualizado = '0,';   
     } else {
         if(inteiros > 0 && decimais === '') {
-            valorAtualizado = valorAtualizado + '.';
-        } else valorAtualizado = valorAtualizado + (decimais ? ',' + decimais : '');
+            valorAtualizado = valorAtualizado + ',';
+        } else valorAtualizado = valorAtualizado + (decimais ? ',' + decimais.substr(0, 8) : '');
     }    
     if (flag) {
         document.querySelector('#inserido').innerText = '-' + valorAtualizado;
@@ -108,8 +115,9 @@ const atualizarVisor = () => {
  */
 const cliqueBotaoDigito = (digito) => {
     if (novoValor) {
-        digito === '0' ? (novoValor = true) : (valorClicado = digito, novoValor = false);
-    } else valorClicado += digito;
+        valorClicado = digito;
+        novoValor = false;
+    } else valorClicado === '0' ? valorClicado = '0' : (valorClicado += digito);
     atualizarVisor();
 }
 
@@ -119,16 +127,19 @@ const cliqueBotaoDigito = (digito) => {
  */
 const clearAll = () => {
     document.querySelector('#inserido').innerText = "0";
+    document.querySelector('#inserido-primeiro').innerText = '';
     valorClicado = '0';
     novoValor = true;
     operacaoAcumulada = null;
     primeiroValor = 0;
+    naoConvertido = "0";
 }
 
 /** 
- * Se o ditio for "-0." ou 0. e clicar em zerar o valor e definido para "0".
+ * Limpa o último digito inserido.
+ * Se o digito for "-0." ou 0. e clicar em zerar o valor e definido para "0".
  * Se o valor for de tamanho 2 e tiver com o "-" então zera o valor. Ex: "-2"
- * Limpa o último digito inserido. Se o último digito for "0" ou com tamanho igual a 1 então zera o visor e atualiza as variáveis.
+ * Se o último digito for "0" ou com tamanho igual a 1 então zera o visor e atualiza as variáveis.
  * Caso contrario atualiza o valor atual no visor. 
  */
 const clearLast = () => {
@@ -182,26 +193,33 @@ const converteValor = () => parseFloat(valorClicado.replace(',','.'));
 const operacaoParaCalcular = (operacao) => {
     calcular();
     primeiroValor = converteValor();
+    naoConvertido = valorClicado;
     operacaoAcumulada = operacao;
     novoValor = true;
+    document.querySelector('#inserido-primeiro').innerText = naoConvertido + ' '+ ' ' + operacaoAcumulada;
 }
 
 const calcular = () => {
     if(operacaoAcumulada != null) {
         let resultado;
         switch(operacaoAcumulada){
-            case '+': resultado = primeiroValor + converteValor();
+            case '+': 
+                resultado = primeiroValor + parseFloat(valorClicado.replace(',','.'));
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
                 break;
-            case '-': resultado = primeiroValor - converteValor();
+            case '-': 
+                resultado = primeiroValor - converteValor();
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
                 break;
-            case '/': resultado = primeiroValor / converteValor();
+            case '/': 
+                resultado = primeiroValor / converteValor();
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
                 break;
-            case '*': resultado = primeiroValor * converteValor();
-                break;
+            case '*': 
+                resultado = primeiroValor * converteValor();
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
         }
-
         valorClicado = resultado.toString().replace('.',',');
-
     }
 
     novoValor = true;
