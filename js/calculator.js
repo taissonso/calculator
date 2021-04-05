@@ -120,6 +120,8 @@ const cliqueBotaoDigito = (digito) => {
     if (novoValor) {
         valorClicado = digito;
         novoValor = false;
+        document.querySelector('#inserido').style.display = 'flex';
+        document.querySelector('.error').style.display = "none";
     } else valorClicado === '0' ? valorClicado = '0' : (valorClicado += digito);
     atualizarVisor();
 }
@@ -212,17 +214,16 @@ const operacaoParaCalcular = (operacao) => {
 
     if (operacaoAcumulada != '=') {
         ultimaOperacao = operacaoAcumulada;
-        document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + ' ' + operacaoAcumulada;
+        document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada;
     } else {
-        if (ultimaOperacao == null && operacaoAcumulada == '=') {
-            document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + ' ' + operacaoAcumulada;
+        if (ultimaOperacao == null && operacaoAcumulada == '=' && divisaoZero == false) {
+            document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada;
         } else {
             if (ultimaOperacao == flagOperacao) {
                 repetirOperacao();
             }
         }
     }
-
 }
 
 
@@ -235,6 +236,7 @@ const operacaoParaCalcular = (operacao) => {
 const calcular = () => {
     if (operacaoAcumulada != null && operacaoAcumulada != '=') {
         let resultado;
+        let divisaoZero = false;
         switch (operacaoAcumulada) {
             case '+':
                 valor2 = converteValor();
@@ -248,8 +250,12 @@ const calcular = () => {
                 break;
             case '/':
                 valor2 = converteValor();
-                resultado = valor1 / valor2;
-                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                if(valor2 == 0){
+                    divisaoZero = true;
+                } else {
+                    resultado = valor1 / valor2;
+                    document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                } 
                 break;
             case '*':
                 valor2 = converteValor();
@@ -257,18 +263,26 @@ const calcular = () => {
                 document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
                 break;
         }
-        valorClicado = resultado.toString().replace('.', ',');
+
+        if(divisaoZero){
+            clearAll();
+            document.querySelector('#inserido').style.display = 'none';
+            document.querySelector('.error').style.display = "flex";
+        } else {
+            valorClicado = resultado.toString().replace('.', ',');
+            atualizarVisor();
+        }
     }
 
     if (operacaoAcumulada == '=') {
         flagOperacao = ultimaOperacao;
     }
 
-    novoValor = true;
     operacaoAcumulada = null;
     valor1 = 0;
-    atualizarVisor();
 }
+
+
 
 /**
  * Caso a operação "=" seja selecioanda duas vezes seguidas irá repetir a última operação, 

@@ -64,6 +64,9 @@ section {
   width: 100%;
   background-color: blue;
 }
+.caixa-calculadora .visor .operacao-inserida .error {
+  display: none;
+}
 .caixa-calculadora .entradas {
   height: 50vh;
   width: 100%;

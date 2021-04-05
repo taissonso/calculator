@@ -69,6 +69,10 @@ section {
             height: 12vh;
             width: 100%;
             background-color: blue;
+        
+            .error {
+                display: none;
+            }
         }
     }
 
