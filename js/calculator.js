@@ -1,5 +1,5 @@
 onload = () => {
-    
+
     /* Pega o valor do localStorage, caso exista algum valor já ativa o modo dark/light*/
     const modeLight = localStorage.getItem('modeLightActive');
     if (modeLight) {
@@ -34,17 +34,20 @@ onload = () => {
     document.querySelector('#btn-sub').onclick = () => operacaoParaCalcular('-');
     document.querySelector('#btn-div').onclick = () => operacaoParaCalcular('/');
     document.querySelector('#btn-mult').onclick = () => operacaoParaCalcular('*');
-    document.querySelector('#btn-igual').onclick = calcular;
+    document.querySelector('#btn-igual').onclick = () => operacaoParaCalcular('=');
+    // document.querySelector('#btn-igual').onclick = calcular;
+
 };
 
 
 /** Variaveis a serem usadas nas funções */
 let valorClicado = '0'; //Armazena o valor clicado na tabuada.
 let novoValor = true; //Usado para tratar quando vai ser um novo valor.
-let primeiroValor = 0; // Valor acumulado para as operações e para o visor de operações
-let naoConvertido = "0";//Usadad para colocar o valor em string no visor de inseridos.
-let operacaoAcumulada = null; //Fica esperando o próximo digito para fazer a operação
-
+let valo1 = 0; // Valor acumulado para as operações e para o visor de operações.
+let valor2 = 0; // Valor acumulado para as operações e para o visor de operações.
+let operacaoAcumulada = null; //Fica esperando o próximo digito para fazer a operação.
+let ultimaOperacao = null; //Acumula a última operação em caso de clicar no = para repetir a mesma operação.
+let flagOperacao = null; // Flag para chamar a função de repetir função. 
 
 /**
  * Muda para o modo Light ou modo Dark se clicar no checkbox ou label.
@@ -73,8 +76,8 @@ const modeDark = () => {
  * e Por fim atualiza o número com inteiros e decimais, com a formatação de ',' e '.'
  */
 const atualizarVisor = () => {
-    if(valorClicado.length > 21){
-        valorClicado = valorClicado.substr(0,21);
+    if (valorClicado.length > 21) {
+        valorClicado = valorClicado.substr(0, 21);
     }
 
     let partesNumero = valorClicado.split(',');
@@ -84,8 +87,8 @@ const atualizarVisor = () => {
     let aux = 0;
     let flag = false;
 
-    inteiros.indexOf('-') != -1 ? ( inteiros = inteiros.slice(1), flag = true ): flag = false;
-   
+    inteiros.indexOf('-') != -1 ? (inteiros = inteiros.slice(1), flag = true) : flag = false;
+
     for (let i = inteiros.length - 1; i >= 0; i--) {
         if (++aux > 3) {
             valorAtualizado = ',' + valorAtualizado;
@@ -94,13 +97,13 @@ const atualizarVisor = () => {
         valorAtualizado = inteiros[i] + valorAtualizado;
     }
 
-    if ( inteiros === '0' && decimais === '') {
-        valorAtualizado = '0,';   
+    if (inteiros === '0' && decimais === '') {
+        valorAtualizado = '0,';
     } else {
-        if(inteiros > 0 && decimais === '') {
+        if (inteiros > 0 && decimais === '') {
             valorAtualizado = valorAtualizado + ',';
         } else valorAtualizado = valorAtualizado + (decimais ? ',' + decimais.substr(0, 8) : '');
-    }    
+    }
     if (flag) {
         document.querySelector('#inserido').innerText = '-' + valorAtualizado;
     } else document.querySelector('#inserido').innerText = valorAtualizado;
@@ -131,33 +134,43 @@ const clearAll = () => {
     valorClicado = '0';
     novoValor = true;
     operacaoAcumulada = null;
+    ultimaOperacao = null;
     primeiroValor = 0;
-    naoConvertido = "0";
+    valor1 = 0;
+    valor2 = 0;
+    flagOperacao = null;
 }
 
 /** 
- * Limpa o último digito inserido.
- * Se o digito for "-0." ou 0. e clicar em zerar o valor e definido para "0".
- * Se o valor for de tamanho 2 e tiver com o "-" então zera o valor. Ex: "-2"
- * Se o último digito for "0" ou com tamanho igual a 1 então zera o visor e atualiza as variáveis.
- * Caso contrario atualiza o valor atual no visor. 
+ * Limpa o último digito inserido ou a última operação executada.
  */
 const clearLast = () => {
 
-    if (valorClicado === "-0," || valorClicado === "0,") {
+    if (novoValor == false) {
+        valorClicado = valorClicado.slice(0, valorClicado.length - 1);
+    }
+
+    if (valorClicado === "-0," || valorClicado === "0," || valorClicado === "-0") {
+        valorClicado = '0';
+        novoValor = true;
+    }
+    
+    if(operacaoAcumulada == null) {
+        document.querySelector('#inserido-primeiro').innerText = '';
+        novoValor = true;
+    }
+
+    if (valorClicado.length == 0) {
         valorClicado = '0';
         novoValor = true;
     }
 
-    if (valorClicado.length === 2 && valorClicado.indexOf('-') != -1) {
-        valorClicado = '0';
+    if (operacaoAcumulada == '=') {
         novoValor = true;
+        document.querySelector('#inserido-primeiro').innerText = '';
+        operacaoAcumulada = null;
     }
 
-    if (valorClicado.length === 1 || valorClicado === "0") {
-        valorClicado = '0';
-        novoValor = true;
-    } else valorClicado = valorClicado.slice(0, valorClicado.length - 1);
     atualizarVisor();
 }
 
@@ -181,50 +194,112 @@ const negativeNumber = (ev) => {
  * caso já tenha o ponto simplesmente faz ev.prenventDefault()
  */
 const colocaPonto = (ev) => {
-    valorClicado.indexOf(',') === -1 ? ( valorClicado = valorClicado + ",", atualizarVisor(), novoValor = false ) : ev.preventDefault();
+    valorClicado.indexOf(',') === -1 ? (valorClicado = valorClicado + ",", atualizarVisor(), novoValor = false) : ev.preventDefault();
 };
 
 /* Converte os valores para números reais */
-const converteValor = () => parseFloat(valorClicado.replace(',','.'));
+const converteValor = () => parseFloat(valorClicado.replace(',', '.'));
 
 /**
- * Recebe qual operação irá fazer 
+ *  Pega o valor da operação, entra na função de calcular que fica esperando o valor para calculo.
+ *  Faz testes com as operações para atualizar os visores e tratar caso tenha uma repetição de calculo. 
  */
 const operacaoParaCalcular = (operacao) => {
     calcular();
-    primeiroValor = converteValor();
-    naoConvertido = valorClicado;
     operacaoAcumulada = operacao;
+    valor1 = converteValor();
     novoValor = true;
-    document.querySelector('#inserido-primeiro').innerText = naoConvertido + ' '+ ' ' + operacaoAcumulada;
+
+    if (operacaoAcumulada != '=') {
+        ultimaOperacao = operacaoAcumulada;
+        document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + ' ' + operacaoAcumulada;
+    } else {
+        if (ultimaOperacao == null && operacaoAcumulada == '=') {
+            document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + ' ' + operacaoAcumulada;
+        } else {
+            if (ultimaOperacao == flagOperacao) {
+                repetirOperacao();
+            }
+        }
+    }
+
 }
 
+
+/* Faz o calculo conforme pega os valores clicados de operação e números. 
+*  Entra no Switch para fazer o calculo conforme a operação.
+*  No final converte o valor para string para atualizar no visor.
+*  Testa se a última operação é de "=" para ativar a função de repetirOperacao caso seja clicado em "=" novamente. 
+*  Atualiza os valores globais para novas operações e por fim atualiza o visor.
+ */
 const calcular = () => {
-    if(operacaoAcumulada != null) {
+    if (operacaoAcumulada != null && operacaoAcumulada != '=') {
         let resultado;
-        switch(operacaoAcumulada){
-            case '+': 
-                resultado = primeiroValor + parseFloat(valorClicado.replace(',','.'));
-                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
+        switch (operacaoAcumulada) {
+            case '+':
+                valor2 = converteValor();
+                resultado = valor1 + valor2;
+                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
                 break;
-            case '-': 
-                resultado = primeiroValor - converteValor();
-                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
+            case '-':
+                valor2 = converteValor();
+                resultado = valor1 - valor2;
+                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
                 break;
-            case '/': 
-                resultado = primeiroValor / converteValor();
-                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
+            case '/':
+                valor2 = converteValor();
+                resultado = valor1 / valor2;
+                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
                 break;
-            case '*': 
-                resultado = primeiroValor * converteValor();
-                document.querySelector('#inserido-primeiro').innerText = naoConvertido +' '+ operacaoAcumulada +' '+ valorClicado +' '+ '=';
+            case '*':
+                valor2 = converteValor();
+                resultado = valor1 * valor2;
+                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                break;
         }
-        valorClicado = resultado.toString().replace('.',',');
+        valorClicado = resultado.toString().replace('.', ',');
+    }
+
+    if (operacaoAcumulada == '=') {
+        flagOperacao = ultimaOperacao;
     }
 
     novoValor = true;
     operacaoAcumulada = null;
-    primeiroValor = 0;
+    valor1 = 0;
     atualizarVisor();
 }
 
+/**
+ * Caso a operação "=" seja selecioanda duas vezes seguidas irá repetir a última operação, 
+ * Irá pegar o resultado da última operação converter para números reais e aplicar a operação com o 
+ * segundo valor da operação anterior. Tipo 1 + 1 = 2, então irá fazer 2(resultado) + 1(segundo valor)
+ * Irá atualizar as variáveis globais e o visor.  
+ */
+const repetirOperacao = () => {
+    let operando1 = document.querySelector('#inserido').innerText;
+    operando1 = parseFloat(operando1.replace(',', '.'));
+
+    let resultado;
+    switch (ultimaOperacao) {
+        case '+':
+            resultado = operando1 + valor2;
+            document.querySelector('#inserido-primeiro').innerText = operando1 + ' ' + ultimaOperacao + ' ' + valor2 + ' ' + '=';
+            break;
+        case '-':
+            resultado = operando1 - valor2;
+            document.querySelector('#inserido-primeiro').innerText = operando1 + ' ' + ultimaOperacao + ' ' + valor2 + ' ' + '=';
+            break;
+        case '/':
+            resultado = operando1 / valor2;
+            document.querySelector('#inserido-primeiro').innerText = operando1 + ' ' + ultimaOperacao + ' ' + valor2 + ' ' + '=';
+            break;
+        case '*':
+            resultado = operando1 * valor2;
+            document.querySelector('#inserido-primeiro').innerText = operando1 + ' ' + ultimaOperacao + ' ' + valor2 + ' ' + '=';
+            break;
+    }
+    operacaoAcumulada = null;
+    valorClicado = resultado.toString().replace('.', ',');
+    atualizarVisor();
+}
