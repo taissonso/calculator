@@ -1,3 +1,34 @@
+@font-face {
+    font-family: 'extra-bold';
+    src: url(../fonts/Manrope-ExtraBold.ttf);
+}
+
+@font-face {
+    font-family: 'semi-bold';
+    src: url(../fonts/Manrope-SemiBold.ttf);
+}
+
+@font-face {
+    font-family: 'bold';
+    src: url(../fonts/Manrope-Bold.ttf);
+}
+
+@font-face {
+    font-family: 'regular';
+    src: url(../fonts/Manrope-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'light';
+    src: url(../fonts/Manrope-Light.ttf);
+}
+
+@font-face {
+    font-family: 'extra-light';
+    src: url(../fonts/Manrope-ExtraLight.ttf);
+}
+
+
 * {
     margin: 0;
     padding: 0;
@@ -5,29 +36,69 @@
 }
 
 $borda: 1px solid black;
-$preto: #07141B;
+$preto: #000000;
 $branco: #D1DAE3;
+$fundo-calculadora: #212121;
+$operacoes: #161616;
+$igual: #2d2e2d;
+$digitos: #070707;
+$cor-fonte-dark: #ffffff;
+
 
 body {
     background-color: $preto;
     color: $branco;
+    transition: all 0.3s linear 0s;
 }
 
 body[light] {
     background-color: $branco;
     color: $preto;
+    transition: all 0.3s linear 0s;
+}
+
+///Oculto o checkbox
+#btn-mode-light {
+    display: none;
+}
+///Cria o elemento com a label::before para da o formato que eu quero
+#btn-mode-light + label::before{
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: $branco;
+    border-radius: 50%;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.btn-mode {
+    position: relative;
+    bottom: 3px;
+    cursor: pointer;
+    font-size: 18px;
+    font-family: sans-serif;
+    font-weight: 500;
+    margin-left: 3px;
+    letter-spacing: 1.5px;
+}
+
+body[light] #btn-mode-light + label::before{
+    background-color: $preto;
 }
 
 header {
     height: 10vh;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: flex-end;
 
     .mode {
-        padding-right: 50px;
+        width: 200px;
     }
 }
+
 
 section {
     height: 90vh;
@@ -42,6 +113,9 @@ section {
     border: $borda;
     display: flex;
     flex-direction: column;    
+    box-shadow: $branco 0px 0px 20px 4px;
+
+
     .visor {
         display: flex;
         flex-direction: column;
@@ -50,8 +124,7 @@ section {
         height: 20vh;
         width: 100%;
         box-sizing: border-box;
-        background-color: red;
-
+        
         .operacao-anterior, .operacao-inserida {
             display: flex;
             align-items: center;
@@ -62,38 +135,99 @@ section {
         .operacao-anterior {
             height: 8vh;
             width: 100%;
-            background-color: green;
+            background-color: $fundo-calculadora;
+            font-family: 'light';
+            font-size: 16px;
         }
     
         .operacao-inserida {
             height: 12vh;
-            width: 100%;
-            background-color: blue;
+            width: 30vw;
+            background-color: $fundo-calculadora;
+            font-family: 'semi-bold';
+            font-size: 2vw;
+            word-wrap: break-word;
         
             .error {
                 display: none;
+                color: #ff0000;
+                font-size: 16px;
             }
         }
     }
 
     .entradas {
-        height: 50vh;
+        height: 49.8vh;
         width: 100%;
-        background-color: indigo;
+        background-color: $fundo-calculadora;
         padding: 1vh 1vw 1vh 0.4vw;
         display: grid;
         grid-template-columns: 6.9vw 6.9vw 6.9vw 6.9vw;
         grid-column-gap: 0.5vw;
         grid-row-gap: 0.5vw;
+        
+        .operacoes {
+            background-color: $operacoes;
+            border: none;
+            color: $cor-fonte-dark;
+            font-size: 22px;
+            font-family: 'light';
+        }
+
+        #btn-div, #btn-sub {
+            font-size: 30px;
+        }
 
         .igual {
-            background-color: blue;
+            background-color: $igual;
             grid-column-start: 4;
             grid-column-end: 4;
             grid-row-start: 4;
             grid-row-end: 6;
         }
+
+        .digitos {
+            background-color: $digitos;
+            border: none;
+            color: $cor-fonte-dark;
+            font-size: 21px;
+            font-family: 'regular';
+        }
+    }
+}
+
+
+body[light] .caixa-calculadora {
+    box-shadow: $preto 0px 0px 20px 4px;
+
+    .visor {
+        .operacao-anterior {
+            background-color: $branco
+        }
+    
+        .operacao-inserida {
+            width: 29.9vw;
+            background-color: $branco;
+        } 
     }
 
+    .entradas {
+        background-color: $branco;
+        
+        .operacoes {
+            background-color: $branco;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            color: $preto;
+        }
+
+        .igual {
+            background-color: $igual;
+        }
+
+        .digitos {
+            background-color: $digitos;
+            color: $cor-fonte-dark;
+        }
+    }
 }
 

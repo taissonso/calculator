@@ -1,3 +1,27 @@
+@font-face {
+  font-family: "extra-bold";
+  src: url(../fonts/Manrope-ExtraBold.ttf);
+}
+@font-face {
+  font-family: "semi-bold";
+  src: url(../fonts/Manrope-SemiBold.ttf);
+}
+@font-face {
+  font-family: "bold";
+  src: url(../fonts/Manrope-Bold.ttf);
+}
+@font-face {
+  font-family: "regular";
+  src: url(../fonts/Manrope-Regular.ttf);
+}
+@font-face {
+  font-family: "light";
+  src: url(../fonts/Manrope-Light.ttf);
+}
+@font-face {
+  font-family: "extra-light";
+  src: url(../fonts/Manrope-ExtraLight.ttf);
+}
 * {
   margin: 0;
   padding: 0;
@@ -5,23 +29,55 @@
 }
 
 body {
-  background-color: #07141B;
+  background-color: #000000;
   color: #D1DAE3;
+  transition: all 0.3s linear 0s;
 }
 
 body[light] {
   background-color: #D1DAE3;
-  color: #07141B;
+  color: #000000;
+  transition: all 0.3s linear 0s;
+}
+
+#btn-mode-light {
+  display: none;
+}
+
+#btn-mode-light + label::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #D1DAE3;
+  border-radius: 50%;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
+.btn-mode {
+  position: relative;
+  bottom: 3px;
+  cursor: pointer;
+  font-size: 18px;
+  font-family: sans-serif;
+  font-weight: 500;
+  margin-left: 3px;
+  letter-spacing: 1.5px;
+}
+
+body[light] #btn-mode-light + label::before {
+  background-color: #000000;
 }
 
 header {
   height: 10vh;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-end;
 }
 header .mode {
-  padding-right: 50px;
+  width: 200px;
 }
 
 section {
@@ -37,6 +93,7 @@ section {
   border: 1px solid black;
   display: flex;
   flex-direction: column;
+  box-shadow: #D1DAE3 0px 0px 20px 4px;
 }
 .caixa-calculadora .visor {
   display: flex;
@@ -46,7 +103,6 @@ section {
   height: 20vh;
   width: 100%;
   box-sizing: border-box;
-  background-color: red;
 }
 .caixa-calculadora .visor .operacao-anterior, .caixa-calculadora .visor .operacao-inserida {
   display: flex;
@@ -57,32 +113,82 @@ section {
 .caixa-calculadora .visor .operacao-anterior {
   height: 8vh;
   width: 100%;
-  background-color: green;
+  background-color: #212121;
+  font-family: "light";
+  font-size: 16px;
 }
 .caixa-calculadora .visor .operacao-inserida {
   height: 12vh;
-  width: 100%;
-  background-color: blue;
+  width: 30vw;
+  background-color: #212121;
+  font-family: "semi-bold";
+  font-size: 2vw;
+  word-wrap: break-word;
 }
 .caixa-calculadora .visor .operacao-inserida .error {
   display: none;
+  color: #ff0000;
+  font-size: 16px;
 }
 .caixa-calculadora .entradas {
-  height: 50vh;
+  height: 49.8vh;
   width: 100%;
-  background-color: indigo;
+  background-color: #212121;
   padding: 1vh 1vw 1vh 0.4vw;
   display: grid;
   grid-template-columns: 6.9vw 6.9vw 6.9vw 6.9vw;
   grid-column-gap: 0.5vw;
   grid-row-gap: 0.5vw;
 }
+.caixa-calculadora .entradas .operacoes {
+  background-color: #161616;
+  border: none;
+  color: #ffffff;
+  font-size: 22px;
+  font-family: "light";
+}
+.caixa-calculadora .entradas #btn-div, .caixa-calculadora .entradas #btn-sub {
+  font-size: 30px;
+}
 .caixa-calculadora .entradas .igual {
-  background-color: blue;
+  background-color: #2d2e2d;
   grid-column-start: 4;
   grid-column-end: 4;
   grid-row-start: 4;
   grid-row-end: 6;
+}
+.caixa-calculadora .entradas .digitos {
+  background-color: #070707;
+  border: none;
+  color: #ffffff;
+  font-size: 21px;
+  font-family: "regular";
+}
+
+body[light] .caixa-calculadora {
+  box-shadow: #000000 0px 0px 20px 4px;
+}
+body[light] .caixa-calculadora .visor .operacao-anterior {
+  background-color: #D1DAE3;
+}
+body[light] .caixa-calculadora .visor .operacao-inserida {
+  width: 29.9vw;
+  background-color: #D1DAE3;
+}
+body[light] .caixa-calculadora .entradas {
+  background-color: #D1DAE3;
+}
+body[light] .caixa-calculadora .entradas .operacoes {
+  background-color: #D1DAE3;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  color: #000000;
+}
+body[light] .caixa-calculadora .entradas .igual {
+  background-color: #2d2e2d;
+}
+body[light] .caixa-calculadora .entradas .digitos {
+  background-color: #070707;
+  color: #ffffff;
 }
 
 /*# sourceMappingURL=stylecalculator.css.map */

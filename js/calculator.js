@@ -32,7 +32,7 @@ onload = () => {
     /* --- Seleciona os botões de operações */
     document.querySelector('#btn-soma').onclick = () => operacaoParaCalcular('+');
     document.querySelector('#btn-sub').onclick = () => operacaoParaCalcular('-');
-    document.querySelector('#btn-div').onclick = () => operacaoParaCalcular('/');
+    document.querySelector('#btn-div').onclick = () => operacaoParaCalcular('÷');
     document.querySelector('#btn-mult').onclick = () => operacaoParaCalcular('*');
     document.querySelector('#btn-igual').onclick = () => operacaoParaCalcular('=');
     // document.querySelector('#btn-igual').onclick = calcular;
@@ -48,7 +48,7 @@ let valor2 = 0; // Valor acumulado para as operações e para o visor de operaç
 let operacaoAcumulada = null; //Fica esperando o próximo digito para fazer a operação.
 let ultimaOperacao = null; //Acumula a última operação em caso de clicar no = para repetir a mesma operação.
 let flagOperacao = null; // Flag para chamar a função de repetir função. 
-
+let divisaoZero = false; //Para quando ocorrer a divisão por zero
 /**
  * Muda para o modo Light ou modo Dark se clicar no checkbox ou label.
  * Em caso de mudar, atualiza o localStorage para saber quando o usuario voltar.
@@ -117,11 +117,13 @@ const atualizarVisor = () => {
  * E atualiza a variável booleana para false.
  */
 const cliqueBotaoDigito = (digito) => {
+    if(divisaoZero == true){
+        clearAll();
+    }
+    
     if (novoValor) {
         valorClicado = digito;
         novoValor = false;
-        document.querySelector('#inserido').style.display = 'flex';
-        document.querySelector('.error').style.display = "none";
     } else valorClicado === '0' ? valorClicado = '0' : (valorClicado += digito);
     atualizarVisor();
 }
@@ -131,22 +133,33 @@ const cliqueBotaoDigito = (digito) => {
  * E restaura os valores padrões.
  */
 const clearAll = () => {
+
+    if(divisaoZero == true){
+        habilitaOperacao();
+        document.querySelector('#inserido').style.display = 'flex';
+        document.querySelector('.error').style.display = "none";
+    }
+
     document.querySelector('#inserido').innerText = "0";
     document.querySelector('#inserido-primeiro').innerText = '';
     valorClicado = '0';
     novoValor = true;
     operacaoAcumulada = null;
     ultimaOperacao = null;
-    primeiroValor = 0;
     valor1 = 0;
     valor2 = 0;
     flagOperacao = null;
+    divisaoZero = false;
 }
 
 /** 
  * Limpa o último digito inserido ou a última operação executada.
  */
 const clearLast = () => {
+
+    if(divisaoZero == true) {
+        clearAll();
+    }
 
     if (novoValor == false) {
         valorClicado = valorClicado.slice(0, valorClicado.length - 1);
@@ -211,19 +224,37 @@ const operacaoParaCalcular = (operacao) => {
     operacaoAcumulada = operacao;
     valor1 = converteValor();
     novoValor = true;
-
+    
     if (operacaoAcumulada != '=') {
         ultimaOperacao = operacaoAcumulada;
         document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada;
     } else {
-        if (ultimaOperacao == null && operacaoAcumulada == '=' && divisaoZero == false) {
-            document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada;
+        if (operacaoAcumulada == '=' && ultimaOperacao == null) {
+            if(flagOperacao == '#'){
+                document.querySelector('#inserido-primeiro').innerText = '';
+            } else document.querySelector('#inserido-primeiro').innerText = valor1 + ' =';
         } else {
             if (ultimaOperacao == flagOperacao) {
                 repetirOperacao();
             }
         }
     }
+}
+
+const desabilitaOperacao = () => {
+    let botoes = document.querySelectorAll('.operacoes');
+  
+    botoes.forEach(botoes => {
+        botoes.disabled = true;
+    });
+};
+
+const habilitaOperacao = () => {
+    let botoes = document.querySelectorAll('.operacoes');
+                
+    botoes.forEach(botoes => {
+        botoes.disabled = false;
+    });
 }
 
 
@@ -236,7 +267,7 @@ const operacaoParaCalcular = (operacao) => {
 const calcular = () => {
     if (operacaoAcumulada != null && operacaoAcumulada != '=') {
         let resultado;
-        let divisaoZero = false;
+        divisaoZero = false;
         switch (operacaoAcumulada) {
             case '+':
                 valor2 = converteValor();
@@ -248,7 +279,7 @@ const calcular = () => {
                 resultado = valor1 - valor2;
                 document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
                 break;
-            case '/':
+            case '÷':
                 valor2 = converteValor();
                 if(valor2 == 0){
                     divisaoZero = true;
@@ -265,9 +296,10 @@ const calcular = () => {
         }
 
         if(divisaoZero){
-            clearAll();
             document.querySelector('#inserido').style.display = 'none';
             document.querySelector('.error').style.display = "flex";
+            document.querySelector('#inserido-primeiro').innerText = valor1 + ' ÷';
+            desabilitaOperacao();
         } else {
             valorClicado = resultado.toString().replace('.', ',');
             atualizarVisor();
@@ -278,11 +310,13 @@ const calcular = () => {
         flagOperacao = ultimaOperacao;
     }
 
+    if(divisaoZero == true && operacaoAcumulada == '='){
+        clearAll();
+        flagOperacao = '#';
+    }
+
     operacaoAcumulada = null;
-    valor1 = 0;
 }
-
-
 
 /**
  * Caso a operação "=" seja selecioanda duas vezes seguidas irá repetir a última operação, 
@@ -304,7 +338,7 @@ const repetirOperacao = () => {
             resultado = operando1 - valor2;
             document.querySelector('#inserido-primeiro').innerText = operando1 + ' ' + ultimaOperacao + ' ' + valor2 + ' ' + '=';
             break;
-        case '/':
+        case '÷':
             resultado = operando1 / valor2;
             document.querySelector('#inserido-primeiro').innerText = operando1 + ' ' + ultimaOperacao + ' ' + valor2 + ' ' + '=';
             break;
