@@ -49,6 +49,8 @@ let operacaoAcumulada = null; //Fica esperando o próximo digito para fazer a op
 let ultimaOperacao = null; //Acumula a última operação em caso de clicar no = para repetir a mesma operação.
 let flagOperacao = null; // Flag para chamar a função de repetir função. 
 let divisaoZero = false; //Para quando ocorrer a divisão por zero
+let naoConvertido1 = '';
+let naoConvertido2 = '';
 /**
  * Muda para o modo Light ou modo Dark se clicar no checkbox ou label.
  * Em caso de mudar, atualiza o localStorage para saber quando o usuario voltar.
@@ -76,9 +78,8 @@ const modeDark = () => {
  * e Por fim atualiza o número com inteiros e decimais, com a formatação de ',' e '.'
  */
 const atualizarVisor = () => {
-    if (valorClicado.length > 21) {
-        valorClicado = valorClicado.substr(0, 21);
-    }
+
+    verificaLargura();
 
     let partesNumero = valorClicado.split(',');
     let inteiros = partesNumero[0];
@@ -105,8 +106,37 @@ const atualizarVisor = () => {
         } else valorAtualizado = valorAtualizado + (decimais ? ',' + decimais.substr(0, 8) : '');
     }
     if (flag) {
-        document.querySelector('#inserido').innerText = '-' + valorAtualizado;
+            document.querySelector('#inserido').innerText = '-' + valorAtualizado;
     } else document.querySelector('#inserido').innerText = valorAtualizado;
+}
+
+
+/**
+ * 
+ */
+
+const verificaLargura = () => {
+    
+    if(valorClicado.length <= 13) {
+        document.querySelector('#inserido').style.fontSize = '3vw';
+    }
+
+    if(valorClicado.length == 14) {
+        document.querySelector('#inserido').style.fontSize = '2.8vw';
+    }
+
+    if(valorClicado.length >= 15) {
+        document.querySelector('#inserido').style.fontSize = '2.4vw';
+    }
+
+    if(valorClicado.indexOf('-') == -1){
+        valorClicado = valorClicado.substr(0, 16);
+    } else {
+        valorClicado = valorClicado.substr(0, 17);
+        if(valorClicado.length > 16){
+            document.querySelector('#inserido').style.fontSize = '2.3vw';
+        }
+    }
 }
 
 /**
@@ -142,6 +172,7 @@ const clearAll = () => {
 
     document.querySelector('#inserido').innerText = "0";
     document.querySelector('#inserido-primeiro').innerText = '';
+    document.querySelector('#inserido').style.fontSize = '3vw';
     valorClicado = '0';
     novoValor = true;
     operacaoAcumulada = null;
@@ -162,6 +193,7 @@ const clearLast = () => {
     }
 
     if (novoValor == false) {
+        console.log("APAGOU O ULTIMO")
         valorClicado = valorClicado.slice(0, valorClicado.length - 1);
     }
 
@@ -172,7 +204,6 @@ const clearLast = () => {
     
     if(operacaoAcumulada == null) {
         document.querySelector('#inserido-primeiro').innerText = '';
-        novoValor = true;
     }
 
     if (valorClicado.length == 0) {
@@ -222,17 +253,18 @@ const converteValor = () => parseFloat(valorClicado.replace(',', '.'));
 const operacaoParaCalcular = (operacao) => {
     calcular();
     operacaoAcumulada = operacao;
+    naoConvertido1 = valorClicado;
     valor1 = converteValor();
     novoValor = true;
     
     if (operacaoAcumulada != '=') {
         ultimaOperacao = operacaoAcumulada;
-        document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada;
+        document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' ' + operacaoAcumulada;
     } else {
         if (operacaoAcumulada == '=' && ultimaOperacao == null) {
             if(flagOperacao == '#'){
                 document.querySelector('#inserido-primeiro').innerText = '';
-            } else document.querySelector('#inserido-primeiro').innerText = valor1 + ' =';
+            } else document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' =';
         } else {
             if (ultimaOperacao == flagOperacao) {
                 repetirOperacao();
@@ -243,7 +275,9 @@ const operacaoParaCalcular = (operacao) => {
 
 const desabilitaOperacao = () => {
     let botoes = document.querySelectorAll('.operacoes');
-  
+    document.getElementById('btn-ponto').disabled = true;
+    document.getElementById('btn-negative').disabled = true;
+
     botoes.forEach(botoes => {
         botoes.disabled = true;
     });
@@ -251,7 +285,9 @@ const desabilitaOperacao = () => {
 
 const habilitaOperacao = () => {
     let botoes = document.querySelectorAll('.operacoes');
-                
+    document.getElementById('btn-ponto').disabled = false;
+    document.getElementById('btn-negative').disabled = false;
+
     botoes.forEach(botoes => {
         botoes.disabled = false;
     });
@@ -270,35 +306,39 @@ const calcular = () => {
         divisaoZero = false;
         switch (operacaoAcumulada) {
             case '+':
+                naoConvertido2 = valorClicado;
                 valor2 = converteValor();
                 resultado = valor1 + valor2;
-                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' ' + operacaoAcumulada + ' ' + naoConvertido2 + ' ' + '=';
                 break;
             case '-':
+                naoConvertido2 = valorClicado;
                 valor2 = converteValor();
                 resultado = valor1 - valor2;
-                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' ' + operacaoAcumulada + ' ' + naoConvertido2 + ' ' + '=';
                 break;
             case '÷':
+                naoConvertido2 = valorClicado;
                 valor2 = converteValor();
                 if(valor2 == 0){
                     divisaoZero = true;
                 } else {
                     resultado = valor1 / valor2;
-                    document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                    document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' ' + operacaoAcumulada + ' ' + naoConvertido2 + ' ' + '=';
                 } 
                 break;
             case '*':
+                naoConvertido2 = valorClicado;
                 valor2 = converteValor();
                 resultado = valor1 * valor2;
-                document.querySelector('#inserido-primeiro').innerText = valor1 + ' ' + operacaoAcumulada + ' ' + valor2 + ' ' + '=';
+                document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' ' + operacaoAcumulada + ' ' + naoConvertido2 + ' ' + '=';
                 break;
         }
 
         if(divisaoZero){
             document.querySelector('#inserido').style.display = 'none';
             document.querySelector('.error').style.display = "flex";
-            document.querySelector('#inserido-primeiro').innerText = valor1 + ' ÷';
+            document.querySelector('#inserido-primeiro').innerText = naoConvertido1 + ' ÷';
             desabilitaOperacao();
         } else {
             valorClicado = resultado.toString().replace('.', ',');
@@ -351,3 +391,5 @@ const repetirOperacao = () => {
     valorClicado = resultado.toString().replace('.', ',');
     atualizarVisor();
 }
+
+

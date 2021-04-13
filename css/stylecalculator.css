@@ -122,13 +122,16 @@ section {
   width: 30vw;
   background-color: #212121;
   font-family: "semi-bold";
-  font-size: 2vw;
+  font-size: 3vw;
   word-wrap: break-word;
 }
 .caixa-calculadora .visor .operacao-inserida .error {
   display: none;
   color: #ff0000;
   font-size: 16px;
+}
+.caixa-calculadora .visor .operacao-inserida #inserido {
+  max-width: 28vw;
 }
 .caixa-calculadora .entradas {
   height: 49.8vh;
@@ -140,17 +143,20 @@ section {
   grid-column-gap: 0.5vw;
   grid-row-gap: 0.5vw;
 }
-.caixa-calculadora .entradas .operacoes {
+.caixa-calculadora .entradas .operacoes, .caixa-calculadora .entradas .resultado {
   background-color: #161616;
   border: none;
   color: #ffffff;
   font-size: 22px;
   font-family: "light";
+  outline: 0 !important;
+  cursor: pointer;
 }
 .caixa-calculadora .entradas #btn-div, .caixa-calculadora .entradas #btn-sub {
   font-size: 30px;
 }
 .caixa-calculadora .entradas .igual {
+  border: none;
   background-color: #2d2e2d;
   grid-column-start: 4;
   grid-column-end: 4;
@@ -163,6 +169,25 @@ section {
   color: #ffffff;
   font-size: 21px;
   font-family: "regular";
+  outline: 0 !important;
+  cursor: pointer;
+}
+.caixa-calculadora .entradas .operacoes:hover, .caixa-calculadora .entradas .resultado:hover, .caixa-calculadora .entradas .digitos:hover {
+  background-color: #494949;
+  background-color: #35353598;
+}
+.caixa-calculadora .entradas .igual:hover {
+  background-color: #858585;
+}
+.caixa-calculadora .entradas .operacoes[disabled] {
+  background-color: #161616;
+  color: #353535;
+  cursor: default;
+}
+.caixa-calculadora .entradas #btn-ponto[disabled], .caixa-calculadora .entradas #btn-negative[disabled] {
+  background-color: #161616;
+  color: #353535;
+  cursor: default;
 }
 
 body[light] .caixa-calculadora {
@@ -172,23 +197,43 @@ body[light] .caixa-calculadora .visor .operacao-anterior {
   background-color: #D1DAE3;
 }
 body[light] .caixa-calculadora .visor .operacao-inserida {
-  width: 29.9vw;
+  width: 29.5vw;
   background-color: #D1DAE3;
 }
 body[light] .caixa-calculadora .entradas {
   background-color: #D1DAE3;
 }
 body[light] .caixa-calculadora .entradas .operacoes {
-  background-color: #D1DAE3;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  color: #000000;
+  background-color: #001fa8;
+  border: none;
+  color: #ffffff;
+}
+body[light] .caixa-calculadora .entradas .resultado {
+  background-color: #d25d19;
 }
 body[light] .caixa-calculadora .entradas .igual {
-  background-color: #2d2e2d;
+  background-color: #00b4cc;
 }
 body[light] .caixa-calculadora .entradas .digitos {
-  background-color: #070707;
-  color: #ffffff;
+  background-color: #6C7D98;
+  font-weight: bold;
+  border: none;
+}
+body[light] .caixa-calculadora .entradas .operacoes:hover {
+  background-color: #011050;
+}
+body[light] .caixa-calculadora .entradas .resultado:hover {
+  background-color: #863100;
+}
+body[light] .caixa-calculadora .entradas .digitos:hover {
+  background-color: #475264;
+}
+body[light] .caixa-calculadora .entradas .igual:hover {
+  background-color: #026c7a;
+}
+body[light] .caixa-calculadora .entradas .operacoes[disabled], body[light] .caixa-calculadora .entradas #btn-ponto[disabled], body[light] .caixa-calculadora .entradas #btn-negative[disabled] {
+  background-color: #232a35;
+  color: #8d8d8d;
 }
 
 /*# sourceMappingURL=stylecalculator.css.map */

@@ -145,13 +145,17 @@ section {
             width: 30vw;
             background-color: $fundo-calculadora;
             font-family: 'semi-bold';
-            font-size: 2vw;
+            font-size: 3vw;
             word-wrap: break-word;
         
             .error {
                 display: none;
                 color: #ff0000;
                 font-size: 16px;
+            }
+
+            #inserido {
+                max-width: 28vw;
             }
         }
     }
@@ -166,19 +170,22 @@ section {
         grid-column-gap: 0.5vw;
         grid-row-gap: 0.5vw;
         
-        .operacoes {
+        .operacoes, .resultado {
             background-color: $operacoes;
             border: none;
             color: $cor-fonte-dark;
             font-size: 22px;
             font-family: 'light';
+            outline: 0 !important;
+            cursor: pointer;
         }
-
+    
         #btn-div, #btn-sub {
             font-size: 30px;
         }
 
         .igual {
+            border: none;
             background-color: $igual;
             grid-column-start: 4;
             grid-column-end: 4;
@@ -192,6 +199,29 @@ section {
             color: $cor-fonte-dark;
             font-size: 21px;
             font-family: 'regular';
+            outline: 0 !important;
+            cursor: pointer;
+        }
+
+        .operacoes:hover, .resultado:hover, .digitos:hover {
+            background-color: #494949;
+            background-color: #35353598;
+        }
+
+        .igual:hover {
+            background-color: #858585;
+        }
+
+        .operacoes[disabled]{
+            background-color: $operacoes;
+            color: #353535;
+            cursor: default;
+        }
+
+        #btn-ponto[disabled], #btn-negative[disabled] {
+            background-color: $operacoes;
+            color: #353535;
+            cursor: default;
         }
     }
 }
@@ -206,7 +236,7 @@ body[light] .caixa-calculadora {
         }
     
         .operacao-inserida {
-            width: 29.9vw;
+            width: 29.5vw;
             background-color: $branco;
         } 
     }
@@ -215,19 +245,48 @@ body[light] .caixa-calculadora {
         background-color: $branco;
         
         .operacoes {
-            background-color: $branco;
-            border: 1px solid rgba(0, 0, 0, 0.5);
-            color: $preto;
+            background-color: #001fa8;
+            border: none;
+            color: #ffffff;
+        }
+
+        .resultado {
+            background-color: #d25d19;
         }
 
         .igual {
-            background-color: $igual;
+            background-color: #00b4cc;
         }
 
         .digitos {
-            background-color: $digitos;
-            color: $cor-fonte-dark;
+            background-color: #6C7D98;
+            font-weight: bold;
+            border: none;
         }
+
+        .operacoes:hover{
+            background-color: #011050;
+        }
+
+        .resultado:hover {
+            background-color: #863100;
+        }
+
+        .digitos:hover {
+            background-color: #475264;
+        }
+
+        .igual:hover {
+            background-color: #026c7a;
+        }
+
+        .operacoes[disabled], #btn-ponto[disabled], #btn-negative[disabled]{
+            background-color: #232a35;
+            color: #8d8d8d;
+        }
+
     }
 }
+
+
 
