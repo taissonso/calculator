@@ -25,6 +25,8 @@
 
 - Para não usar JQuery e plugins, foi feito uma função para ajustar tamanho do texto dentro dos visores das operações para não estourar o limite do visor, porém essa função não deixa esse texto responviso depois de digitado porém ao limpar o visor os próximos digitos vem ajustados ao tamanho do visor.  
 
+- A imagem do Favicon foi retirada do site [Flaticon - Clique aqui](https://www.flaticon.com/free-icon/calculator_891175?term=calculator&page=1&position=15&page=1&position=15&related_id=891175&origin=search) e será redirecionado para o icone.
+
 **Agradecimento:** Se você leu até aqui, eu só tenho a agradecer pelo seu tempo em ver esse projeto, que me ajudou muito nos meus estudos e aprendizado. Se tiver alguma dúvida, sugestão ou critíca construtiva, por favor entre em contado, é sempre bom trocar idéias e conhecimento com o próximo. Obrigado!
 
 :coffee: :floppy_disk:    :computer:     :tada:     :video_game: 
