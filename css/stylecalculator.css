@@ -129,6 +129,7 @@ section {
   display: none;
   color: #ff0000;
   font-size: 16px;
+  text-transform: uppercase;
 }
 .caixa-calculadora .visor .operacao-inserida #inserido {
   max-width: 28vw;
@@ -174,7 +175,6 @@ section {
 }
 .caixa-calculadora .entradas .operacoes:hover, .caixa-calculadora .entradas .resultado:hover, .caixa-calculadora .entradas .digitos:hover {
   background-color: #494949;
-  background-color: #35353598;
 }
 .caixa-calculadora .entradas .igual:hover {
   background-color: #858585;
@@ -234,6 +234,99 @@ body[light] .caixa-calculadora .entradas .igual:hover {
 body[light] .caixa-calculadora .entradas .operacoes[disabled], body[light] .caixa-calculadora .entradas #btn-ponto[disabled], body[light] .caixa-calculadora .entradas #btn-negative[disabled] {
   background-color: #232a35;
   color: #8d8d8d;
+}
+
+@media (max-width: 1023px) {
+  header {
+    height: 15vh;
+    align-items: center;
+  }
+  header .mode {
+    width: 230px;
+  }
+  header #btn-mode-light + label::before {
+    width: 30px;
+    height: 30px;
+  }
+  header .btn-mode {
+    bottom: 5px;
+    font-size: 24px;
+    margin-left: 10px;
+  }
+
+  section {
+    height: 85vh;
+  }
+
+  .caixa-calculadora {
+    height: 85vh;
+    width: 100vw;
+    border: none;
+    box-shadow: none;
+    box-sizing: border-box;
+  }
+  .caixa-calculadora .visor {
+    width: 100%;
+  }
+  .caixa-calculadora .visor .operacao-anterior, .caixa-calculadora .visor .operacao-inserida {
+    padding-right: 15px;
+  }
+  .caixa-calculadora .visor .operacao-anterior {
+    height: 8vh;
+    width: 100%;
+    font-size: 4vw;
+  }
+  .caixa-calculadora .visor .operacao-inserida {
+    height: 12vh;
+    width: 100%;
+    font-size: 10vw;
+  }
+  .caixa-calculadora .visor .operacao-inserida .error {
+    display: none;
+    color: #ff0000;
+    font-size: 20px;
+  }
+  .caixa-calculadora .visor .operacao-inserida #inserido {
+    max-width: 100%;
+    font-size: 10vw;
+  }
+  .caixa-calculadora .entradas {
+    flex-grow: 1;
+    grid-template-columns: 23vw 23vw 23vw 23vw;
+    grid-column-gap: 1.5vw;
+    grid-row-gap: 1.5vw;
+    padding: 0vh 0vw 1vh 1.6vw;
+  }
+
+  body[light] .caixa-calculadora .visor .operacao-inserida {
+    width: 100%;
+  }
+
+  .resultado:hover {
+    background-color: #863100;
+  }
+
+  .digitos:hover {
+    background-color: #475264;
+  }
+
+  .igual:hover {
+    background-color: #026c7a;
+  }
+}
+@media (max-width: 500px) {
+  header .mode {
+    width: 160px;
+  }
+  header #btn-mode-light + label::before {
+    width: 25px;
+    height: 25px;
+  }
+  header .btn-mode {
+    bottom: 7px;
+    font-size: 18px;
+    margin-left: 8px;
+  }
 }
 
 /*# sourceMappingURL=stylecalculator.css.map */

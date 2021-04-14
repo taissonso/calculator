@@ -152,6 +152,7 @@ section {
                 display: none;
                 color: #ff0000;
                 font-size: 16px;
+                text-transform: uppercase;
             }
 
             #inserido {
@@ -205,7 +206,7 @@ section {
 
         .operacoes:hover, .resultado:hover, .digitos:hover {
             background-color: #494949;
-            background-color: #35353598;
+            // background-color: #35353598;
         }
 
         .igual:hover {
@@ -288,5 +289,127 @@ body[light] .caixa-calculadora {
     }
 }
 
+@media (max-width: 1023px) {
+
+   header {
+        height: 15vh;
+        align-items: center;
+       .mode {
+            width: 230px;
+        }
+
+        #btn-mode-light + label::before{
+            width: 30px;
+            height: 30px;
+        }
+        
+        .btn-mode {
+            bottom: 5px;
+            font-size: 24px;
+            margin-left: 10px;
+        }
+    }
+
+    section {
+        height: 85vh;
+    }
+
+    .caixa-calculadora {
+        height: 85vh;
+        width: 100vw;
+        border: none;
+        box-shadow: none;
+        box-sizing: border-box;
+        .visor {
+            width: 100%;
+            
+            .operacao-anterior, .operacao-inserida {
+                padding-right: 15px;
+            }
+    
+            .operacao-anterior {
+                height: 8vh;
+                width: 100%;
+                font-size: 4vw;
+            }
+        
+            .operacao-inserida {
+                height: 12vh;
+                width: 100%;
+                font-size: 10vw;
+            
+                .error {
+                    display: none;
+                    color: #ff0000;
+                    font-size: 20px;
+                }
+    
+                #inserido {
+                    max-width: 100%;
+                    font-size: 10vw;
+                }
+            }
+        }
+
+        .entradas {
+            flex-grow: 1;
+            grid-template-columns: 23vw 23vw 23vw 23vw;
+            grid-column-gap: 1.5vw;
+            grid-row-gap: 1.5vw;
+            padding: 0vh 0vw 1vh 1.6vw;
+        }
+    }
+
+    body[light] .caixa-calculadora {
+            
+        .visor {
+            .operacao-inserida {
+                width: 100%;
+            }
+        }
+    }    
+
+    // .operacoes:hover, .resultado:hover{
+    //     background-color: none;
+    // }
+
+    .resultado:hover {
+        background-color: #863100;
+    }
+
+    .digitos:hover {
+        background-color: #475264;
+    }
+
+    .igual:hover {
+        background-color: #026c7a;
+    }
+
+    // .caixa-calculadora{
+    //     .entradas {
+    //         .operacoes:not(.operacoes):hover {
+    //             background-color: transparent;
+    //        }
+    //     }   
+    // }
+}
 
 
+@media (max-width: 500px) {
+    header {
+       .mode {
+            width: 160px;
+        }
+
+        #btn-mode-light + label::before{
+            width: 25px;
+            height: 25px;
+        }
+        
+        .btn-mode {
+            bottom: 7px;
+            font-size: 18px;
+            margin-left: 8px;
+        }
+    }
+}

@@ -112,29 +112,55 @@ const atualizarVisor = () => {
 
 
 /**
- * 
+ * Verifica a largura do body para tratar o tamanho das fontes no visor de números, conforme a regra do tamanho do elemento
  */
 
 const verificaLargura = () => {
     
-    if(valorClicado.length <= 13) {
-        document.querySelector('#inserido').style.fontSize = '3vw';
-    }
+    let largura = document.querySelector('body').offsetWidth;
+    
+    if(largura > 1023) {
+        if(valorClicado.length <= 13) {
 
-    if(valorClicado.length == 14) {
-        document.querySelector('#inserido').style.fontSize = '2.8vw';
-    }
-
-    if(valorClicado.length >= 15) {
-        document.querySelector('#inserido').style.fontSize = '2.4vw';
-    }
-
-    if(valorClicado.indexOf('-') == -1){
-        valorClicado = valorClicado.substr(0, 16);
+            document.querySelector('#inserido').style.fontSize = '3vw';
+        }
+    
+        if(valorClicado.length == 14) {
+            document.querySelector('#inserido').style.fontSize = '2.8vw';
+        }
+    
+        if(valorClicado.length >= 15) {
+            document.querySelector('#inserido').style.fontSize = '2.4vw';
+        }
+    
+        if(valorClicado.indexOf('-') == -1){
+            valorClicado = valorClicado.substr(0, 16);
+        } else {
+            valorClicado = valorClicado.substr(0, 17);
+            if(valorClicado.length > 16){
+                document.querySelector('#inserido').style.fontSize = '2.3vw';
+            }
+        }
     } else {
-        valorClicado = valorClicado.substr(0, 17);
-        if(valorClicado.length > 16){
-            document.querySelector('#inserido').style.fontSize = '2.3vw';
+        if(valorClicado.length <= 13) {
+            document.querySelector('#inserido').style.fontSize = '10vw';
+        }
+    
+        if(valorClicado.length == 14) {
+            document.querySelector('#inserido').style.fontSize = '9vw';
+        }
+    
+        if(valorClicado.length >= 15) {
+            document.querySelector('#inserido').style.fontSize = '8vw';
+        }
+    
+        if(valorClicado.indexOf('-') == -1){
+            valorClicado = valorClicado.substr(0, 16);
+        } else {
+            valorClicado = valorClicado.substr(0, 17);
+            if(valorClicado.length > 16){
+                document.querySelector('#inserido').style.fontSize = '7.5vw';
+            }
         }
     }
 }
@@ -169,10 +195,11 @@ const clearAll = () => {
         document.querySelector('#inserido').style.display = 'flex';
         document.querySelector('.error').style.display = "none";
     }
+    verificaLargura();
 
     document.querySelector('#inserido').innerText = "0";
     document.querySelector('#inserido-primeiro').innerText = '';
-    document.querySelector('#inserido').style.fontSize = '3vw';
+    
     valorClicado = '0';
     novoValor = true;
     operacaoAcumulada = null;
@@ -273,6 +300,10 @@ const operacaoParaCalcular = (operacao) => {
     }
 }
 
+/**
+ * Desabilita os botões de operações, ponto e +/- quando a divisão for pode zero(0)
+ *  
+ * */
 const desabilitaOperacao = () => {
     let botoes = document.querySelectorAll('.operacoes');
     document.getElementById('btn-ponto').disabled = true;
@@ -283,6 +314,9 @@ const desabilitaOperacao = () => {
     });
 };
 
+/**
+ * Habilita os botões de operações, ponto e +/- quando clicado em qualquer botão ainda ativo.
+ */
 const habilitaOperacao = () => {
     let botoes = document.querySelectorAll('.operacoes');
     document.getElementById('btn-ponto').disabled = false;
